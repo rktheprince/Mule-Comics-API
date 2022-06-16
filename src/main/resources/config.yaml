@@ -1,0 +1,6 @@
+db:
+  host: "mydbinstance.cwk4mhrjdbv0.us-west-1.rds.amazonaws.com"
+  port: "3306"
+  username: "mysqldatabase"
+  password: "mysqldatabase"
+  database: "comics"

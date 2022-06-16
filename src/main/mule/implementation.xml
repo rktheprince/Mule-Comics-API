@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="getAllCharacters" doc:id="e7534a7e-e438-4789-be90-a0179add6225" >
+		<db:select doc:name="Select" doc:id="49d1f327-7f0f-41ca-bd12-61ac5886aa58" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM comics;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="180977d3-b9ec-4eb5-bb43-de3dda9576d0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="cbed49b9-bd09-4b15-b518-39f04e4e1dd7" message="#[payload]" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="77d5796a-ef6d-4e12-818c-c0bebcd91c1b" >
+				<ee:transform doc:name="Transform Message" doc:id="8cf4c703-0987-4ba2-a33b-b01cb3a00fd3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error Occurred....!!!!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="b4b63d3c-9444-441e-a5c3-5af558d49003" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="getCharacterByID" doc:id="66ff31a5-d0fe-47ed-a658-b2e4b35c69de" >
+		<db:select doc:name="Select" doc:id="5c316a9d-26a9-40c2-8f61-4ce17bb39a3b" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM comics WHERE id = :id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: attributes.uriParams.ID
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="005aa060-f839-4e9b-bc73-5ce877e0a470" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="d27cfab5-7958-4b9f-a602-1d76ed13d715" message="#[payload]"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d24ad432-54ce-4526-8e40-dd36bbe1378c" >
+				<ee:transform doc:name="Transform Message" doc:id="e9570bb2-bbc9-47d3-b952-a64f22e3d38f" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Error Occurred...!!!!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="00d97ce8-b634-4b0b-a2ea-6494e014afc0" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="postCharacter" doc:id="6fe4bf79-8b81-44bc-941c-ef759a1aa936" >
+		<db:insert doc:name="Insert" doc:id="8906c760-250e-4616-b51b-a4d13d845d57" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO comics VALUES(:id, :name, :universe, :ability, :team, :movies);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: payload.ID,
+	name: payload.Name,
+	universe: payload.Universe,
+	ability: payload.Ability,
+	team: payload.Team,
+	movies: payload.Movies
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="12a4b83d-62ef-42a8-9603-df5d5c7287ba" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Data Inserted Successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="1229d9e1-3dcd-4281-bd71-aac128bfd303" message="#[payload]"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9910f2da-00a3-4c86-a1d1-23d624ee278a" >
+				<ee:transform doc:name="Transform Message" doc:id="cb88beb9-ad72-4e89-9943-26ad3803496b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Data Already Present"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="801c18d2-4d8a-4a63-b3ac-207d43f3ec14" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="updateCharacterByID" doc:id="b6d0699e-1469-4d41-b921-cba3687082c0" >
+		<db:update doc:name="Update" doc:id="cd8c78dd-f45f-4fe4-a723-8b3a32440588" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE comics SET Name = :name, Universe = :universe, Ability = :ability, Team = :team, Movies = :movies WHERE ID = :id;
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: attributes.uriParams.ID,
+	name: payload.Name,
+	universe: payload.Universe,
+	ability: payload.Ability,
+	team: payload.Team,
+	movies: payload.Movies
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="cbf2c3a3-676e-439d-885b-e2bea612d40e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Data Updated Successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0c1b79f7-dafb-4df4-9bf7-94be4beb009b" message="#[payload]"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7c48858c-2e99-44ff-923d-0a5b22fa092f" >
+				<ee:transform doc:name="Transform Message" doc:id="969f983f-1c5c-44ab-9b4c-07ae398e8611" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Can't Update. Error Occurred....!!!!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="5040b611-d826-4075-a2cd-bc949ccfd5a8" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deleteCharacterByID" doc:id="b6a90ce3-f3e8-4762-b7d1-05b48266d139" >
+		<db:delete doc:name="Delete" doc:id="b306deb6-6836-47ab-b18a-1d4900d93d4f" config-ref="Database_Config">
+			<db:sql ><![CDATA[DELETE FROM comics WHERE ID = :id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: attributes.uriParams.ID
+}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="d357aa83-42dd-4277-898f-187c5ce3f8e0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Data Deleted Successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="40fd52d1-5ce1-4e0d-9a38-c8700c8d526c" message="#[payload]"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="66d96a36-2cf6-456f-9e3a-7dccf22c180e" >
+				<ee:transform doc:name="Transform Message" doc:id="ee657d8e-aa8e-4b68-a506-6fc9b68c88d8" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Can't Delete. Error Occurred....!!!!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="69eded76-8cbc-466a-9108-acc4f972f6fb" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
