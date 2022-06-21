@@ -1,0 +1,37 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  ID: 
+    description: ID of the Character
+    type: number
+    format: int
+    required: true
+    default: 000
+    example: 101
+  Name: 
+    description: Name of the Character
+    type: string
+    default: Global
+    example: Ironman
+  Universe:
+    description: Universe of the Character
+    type: string
+    default: None
+    example: MCU
+  Ability:
+    description: Ability of the Character
+    type: string
+    default: Human
+    example: Human
+  Team: 
+    description: Belongs to which Team
+    type: string
+    default: None
+    example: Avengers
+  Movies: 
+    description: Movie of the Character
+    type: number
+    format: int
+    default: 0
+    example: 1

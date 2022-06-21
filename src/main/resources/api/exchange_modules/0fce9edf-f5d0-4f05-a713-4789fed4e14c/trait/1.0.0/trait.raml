@@ -1,0 +1,15 @@
+#%RAML 1.0 Trait
+
+queryParameters:
+  favourite:
+    description: Favourite Cinematic Universe
+    required: true
+    type: string
+responses:
+  400:
+    description: parameter was not provided.
+    body:
+      application/json:
+        example:
+          output:
+            message: Parameter Favourite is Missing

@@ -1,0 +1,24 @@
+#%RAML 1.0 ResourceType
+
+get:
+  responses:
+    "200": 
+      body:
+        application/json:
+          type: <<typereference1>>
+          examples: 
+            output: <<examplereference1>>
+          
+post:
+  body:
+    application/json:
+      type: <<typereference2>>
+      examples:
+        input: <<examplereference2>>
+  responses:
+    "201":
+      body:
+        application/json:
+          example:
+            output: 
+              message: <<messagereference1>>

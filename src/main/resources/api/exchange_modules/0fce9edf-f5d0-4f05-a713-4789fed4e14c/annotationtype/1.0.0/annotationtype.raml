@@ -1,0 +1,15 @@
+#%RAML 1.0 AnnotationTypeDeclaration
+
+allowedTargets: [ Method ]
+usage: |
+      Use this annotation to declare a test case.
+properties:
+  number:
+    type: string
+    required: true
+  testScript: 
+    type: string[]
+    required: false
+  expectedOutput: 
+    type: string
+    required: true

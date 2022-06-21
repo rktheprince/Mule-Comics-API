@@ -1,0 +1,99 @@
+#%RAML 1.0
+title: ComicsAPI
+version: "1.0"
+
+protocols:
+  - HTTP
+
+mediaType: 
+  - application/json
+
+documentation:
+  - 
+    !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/documentation/1.0.0/documentation.raml
+
+types:
+  character: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/datatype/1.0.0/datatype.raml
+
+traits:
+  queryParams: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/trait/1.0.0/trait.raml
+
+securitySchemes:
+  basic: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/securityscheme/1.0.0/securityscheme.raml
+
+uses:
+  mylib: exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/library/1.0.0/library.raml
+
+resourceTypes: 
+  collections: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/resourcetype/1.0.0/resourcetype.raml
+
+annotationTypes:
+  testcase: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/annotationtype/1.0.0/annotationtype.raml
+
+/comics:
+  is:
+    - queryParams
+  securedBy:
+    - basic
+  type:
+    collections:
+      typereference1: mylib.character[]
+      typereference2: character
+      messagereference1: "Character is Saved Successfully"
+      examplereference1: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/getexample/1.0.0/getexample.raml
+      examplereference2: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/example/1.0.0/example.raml
+
+  /{ID}:
+    is:
+      - queryParams
+    securedBy:
+      - basic
+    get:
+      displayName: getCharacterByID
+      description: To get the Character by ID
+      (testcase):
+        number: one
+        testScript: [ getCharacterByID ]
+        expectedOutput: oneCharacter
+      responses:
+        "200":
+          body:
+            application/json:
+              type: mylib.character
+              examples:
+                output: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/example/1.0.0/example.raml
+
+    put:
+      displayName: putCharacterByID
+      description: To put the Character by ID
+      (testcase):
+        number: two
+        testScript: [ putCharacterByID ]
+        expectedOutput: message
+      body:
+        application/json:
+          type: mylib.character
+          examples:
+            input: !include exchange_modules/0fce9edf-f5d0-4f05-a713-4789fed4e14c/example/1.0.0/example.raml
+      responses:
+        "201":
+          body:
+            application/json:
+              example:
+                output:
+                  message: "Character is Successfully Updated"
+    
+    delete:
+      displayName: deleteCharacterByID
+      description: To delete the Character by ID
+      (testcase):
+        number: three
+        testScript: [ deleteCharacterByID ]
+        expectedOutput: message
+      responses:
+        "200":
+          body:
+            application/json:
+              example:
+                output:
+                  message: "Character is Succcessfully Deleted"
