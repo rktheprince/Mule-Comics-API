@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
     <http:listener-config name="comicsapi-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
@@ -124,128 +124,18 @@ output application/json
         </error-handler>
     </flow>
     <flow name="put:\comics\(ID):application\json:comicsapi-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="ID">attributes.uriParams.'ID'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  "output": {
-    message: "Character is Successfully Updated"
-  }
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="updateCharacterByID" doc:id="270bb2ef-0d26-4ad0-b7c1-65b0e917d136" name="updateCharacterByID"/>
     </flow>
     <flow name="delete:\comics\(ID):comicsapi-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="ID">attributes.uriParams.'ID'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  "output": {
-    message: "Character is Succcessfully Deleted"
-  }
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="deleteCharacterByID" doc:id="b3a3a7ab-c043-4ce0-a077-43bd878ebc4e" name="deleteCharacterByID"/>
     </flow>
     <flow name="get:\comics:comicsapi-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-[
-  {
-    ID: 101,
-    Name: "Ironman",
-    Universe: "MCU",
-    Ability: "Superhuman",
-    Team: "Avengers",
-    Movies: 3
-  }, 
-  {
-    ID: 102,
-    Name: "Superman",
-    Universe: "DCEU",
-    Ability: "Superhuman",
-    Team: "Justice League",
-    Movies: 2
-  }, 
-  {
-    ID: 103,
-    Name: "Hawkeye",
-    Universe: "MCU",
-    Ability: "Human",
-    Team: "Avengers",
-    Movies: 1
-  }, 
-  {
-    ID: 104,
-    Name: "Batman",
-    Universe: "DCEU",
-    Ability: "Human",
-    Team: "Justice League",
-    Movies: 3
-  }, 
-  {
-    ID: 105,
-    Name: "Spiderman",
-    Universe: "MCU",
-    Ability: "Superhuman",
-    Team: "Avengers",
-    Movies: 8
-  }
-]]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="getAllCharacters" doc:id="33ca4aa4-fd40-497a-b067-9db85bf82f44" name="getAllCharacters"/>
     </flow>
     <flow name="get:\comics\(ID):comicsapi-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="ID">attributes.uriParams.'ID'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  ID: 103,
-  Name: "Hawkeye",
-  Universe: "MCU",
-  Ability: "Human",
-  Team: "Avengers",
-  Movies: 1
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="getCharacterByID" doc:id="6cb3a14f-d52c-4f18-828b-cc0b74939f11" name="getCharacterByID"/>
     </flow>
     <flow name="post:\comics:application\json:comicsapi-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  "output": {
-    message: "Character is Saved Successfully"
-  }
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="postCharacter" doc:id="07b86573-bc00-4592-8708-eb62ea569d0e" name="postCharacter"/>
     </flow>
 </mule>

@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_c09ad9e9_5574_46e3_a2ad_b143e340650c_Output_Payload = Array<{  Ability: String,   Universe: String,   Team: String,   ID: Number,   Movies: Number,   Name: String,   _?: Any}>
+
